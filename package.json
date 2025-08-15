@@ -6,14 +6,15 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc && npm run copy-prisma",
-    "copy-prisma": "copyfiles -u 1 src/generated/**/* dist/",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
-    "start": "npm run prisma:generate && npm run prisma:push && npm run build && node dist/index.js"
+    "start": "npm run build && npm run prisma:generate && npm run prisma:push && node dist/index.js",
+    "postinstall": "npm run prisma:generate",
+    "copy-prisma": "copyfiles -u 1 \"src/generated/**/*\" dist/ && mkdir -p dist/generated/prisma/runtime && copyfiles -u 2 \"src/generated/prisma/runtime/**/*\" dist/generated/prisma/runtime/"
   },
   "keywords": [],
   "author": "",
