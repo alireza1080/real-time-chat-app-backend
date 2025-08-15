@@ -15,14 +15,20 @@ const isUserLoggedIn = async (
       return next();
     }
 
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+
+    if (typeof decoded !== 'object' || !('userId' in decoded)) {
+      req.isUserLoggedIn = false;
+      return next();
+    }
+
     const user = await prisma.user.findUnique({
       where: {
-        id: token,
+        id: decoded.userId,
       },
     });
 
     if (!user) {
-      // Remove the cookie
       res.cookie('jwt', '', {
         httpOnly: true,
         secure: process.env.NODE_ENV !== 'development',
@@ -34,19 +40,10 @@ const isUserLoggedIn = async (
       return next();
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-
-    if (typeof decoded !== 'object' || !('userId' in decoded)) {
-      // Valid token, but unexpected payload
-      req.isUserLoggedIn = false;
-      return next();
-    }
-
     req.isUserLoggedIn = true;
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    // This catches invalid/expired tokens
     console.log('Error in isUserLoggedIn middleware:', error);
     req.isUserLoggedIn = false;
     next();
