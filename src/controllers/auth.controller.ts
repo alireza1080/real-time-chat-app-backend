@@ -80,7 +80,7 @@ const signUp = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV !== 'development',
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict',
+      sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
     });
 
     res.json({
@@ -152,7 +152,7 @@ const signIn = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV !== 'development',
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict',
+      sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
     });
 
     res.json({
@@ -177,7 +177,7 @@ const getUser = async (req: Request, res: Response) => {
         httpOnly: true,
         secure: process.env.NODE_ENV !== 'development',
         maxAge: 0,
-        sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict',
+        sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
       });
 
       return res.status(401).json({
@@ -329,7 +329,7 @@ const logout = async (_req: Request, res: Response) => {
     httpOnly: true,
     secure: process.env.NODE_ENV !== 'development',
     maxAge: 0,
-    sameSite: 'strict',
+    sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
   });
   res.json({ success: true, message: 'Logged out successfully' });
 };
