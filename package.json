@@ -12,8 +12,7 @@
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
-    "start": "npm run build && npm run prisma:generate && npm run prisma:push && node dist/index.js",
-    "postinstall": "npm run prisma:generate"
+    "start": "npm run prisma:generate && npm run prisma:push && npm run build && node dist/index.js"
   },
   "keywords": [],
   "author": "",
