@@ -1,15 +1,35 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { prisma } from '../services/database.service.js';
 
 const isUserLoggedIn = async (
   req: Request,
-  _res: Response,
+  res: Response,
   next: NextFunction,
 ) => {
   try {
     const token = req.cookies.jwt;
 
     if (!token) {
+      req.isUserLoggedIn = false;
+      return next();
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: token,
+      },
+    });
+
+    if (!user) {
+      // Remove the cookie
+      res.cookie('jwt', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'development',
+        maxAge: 0,
+        sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
+      });
+
       req.isUserLoggedIn = false;
       return next();
     }
